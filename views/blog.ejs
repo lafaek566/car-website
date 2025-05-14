@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blog - Daftar Mobil</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: #f4f7fc;
+        color: #333;
+        line-height: 1.6;
+      }
+
+      header {
+        background: linear-gradient(to right, #007bff, #00c6ff);
+        color: white;
+        text-align: center;
+        padding: 30px 0;
+        border-bottom-left-radius: 50%;
+        border-bottom-right-radius: 50%;
+      }
+
+      header h1 {
+        font-size: 3rem;
+        letter-spacing: 1px;
+        margin: 0;
+        font-weight: 600;
+      }
+
+      /* Container for posts */
+      .container {
+        max-width: 900px; /* Membatasi lebar maksimal container */
+        margin: 30px auto; /* Rata tengah dengan margin otomatis */
+        padding: 30px;
+        background-color: white;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        border-radius: 15px;
+        transition: transform 0.3s ease;
+      }
+
+      .container:hover {
+        transform: translateY(-5px);
+      }
+
+      .post {
+        border-bottom: 1px solid #ddd;
+        padding: 20px;
+        margin-bottom: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Vertikal Center */
+        align-items: center; /* Horizontal Center */
+        text-align: center; /* Center text */
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .post:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+      }
+
+      .post h2 {
+        font-size: 1.8rem;
+        color: #333;
+        margin-bottom: 10px;
+      }
+
+      .post p {
+        font-size: 1.1rem;
+        color: #777;
+        margin-bottom: 10px;
+      }
+
+      .post a {
+        font-size: 1.1rem;
+        color: #4caf50;
+        text-decoration: none;
+        transition: color 0.3s;
+      }
+
+      .post a:hover {
+        color: #45a049;
+      }
+
+      footer {
+        background-color: #333;
+        color: white;
+        text-align: center;
+        padding: 20px 0;
+        margin-top: 30px;
+        border-top-left-radius: 50%;
+        border-top-right-radius: 50%;
+      }
+
+      footer p {
+        font-size: 1rem;
+        margin: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1>Blog - Daftar Mobil</h1>
+    </header>
+
+    <div class="container">
+      <% articles.forEach((article) => { %>
+      <div class="post">
+        <h2><a href="/blog/<%= article.id %>"><%= article.title %></a></h2>
+        <p><%= article.excerpt %></p>
+        <a href="/blog/<%= article.id %>">Baca Selengkapnya</a>
+      </div>
+      <% }) %>
+    </div>
+
+    <footer>
+      <p>&copy; 2025 Daftar Mobil. All rights reserved.</p>
+    </footer>
+  </body>
+</html>

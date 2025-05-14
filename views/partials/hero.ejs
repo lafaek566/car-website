@@ -1,0 +1,139 @@
+<!-- Hero Section -->
+<section
+  class="hero-section"
+  style="
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5rem 2rem;
+    background-color: #ffffff;
+    color: #333;
+    border-radius: 15px;
+    position: relative;
+  "
+>
+  <div
+    class="hero-text"
+    style="flex: 1; padding-right: 3rem; text-align: left; z-index: 2"
+  >
+    <h1
+      style="
+        font-size: 3.5rem;
+        margin-bottom: 1.5rem;
+        font-weight: 700;
+        color: #333;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+      "
+    >
+      Temukan Mobil Impianmu
+    </h1>
+    <p
+      style="
+        font-size: 1.25rem;
+        margin-bottom: 2.5rem;
+        font-weight: 400;
+        line-height: 1.8;
+      "
+    >
+      Jelajahi berbagai pilihan mobil terbaik dengan harga dan fitur sesuai
+      kebutuhanmu. Dapatkan pengalaman terbaik dalam memilih mobil.
+    </p>
+    <button
+      onclick="scrollToSearchForm()"
+      class="hero-btn"
+      style="
+        background-color: #007bff;
+        color: white;
+        padding: 1.2rem 2.5rem;
+        text-decoration: none;
+        border-radius: 50px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        transition: all 0.3s ease-in-out;
+        cursor: pointer;
+      "
+      onmouseover="this.style.transform='scale(1.1)'; this.style.backgroundColor='#0056b3';"
+      onmouseout="this.style.transform='scale(1)'; this.style.backgroundColor='#007bff';"
+    >
+      Cari Mobil
+    </button>
+  </div>
+  <div
+    class="hero-image"
+    style="flex: 1; text-align: center; z-index: 1; position: relative"
+  >
+    <img
+      src="https://i.pinimg.com/736x/45/26/7c/45267cd84d4f8f183ebc347811df497b.jpg"
+      alt="Mobil Impian"
+      style="
+        max-width: 100%;
+        height: auto;
+        border-radius: 15px;
+        filter: brightness(0.7);
+        transition: all 0.5s ease-in-out;
+      "
+      onmouseover="this.style.transform='scale(1.05)'; this.style.filter='brightness(1)';"
+      onmouseout="this.style.transform='scale(1)'; this.style.filter='brightness(0.7)';"
+    />
+  </div>
+</section>
+
+<!-- Search Form -->
+<div
+  class="search-form"
+  id="search-form"
+  style="
+    padding: 3rem 2rem;
+    background: #fff;
+    border-radius: 10px;
+    margin-top: 2rem;
+    text-align: center;
+  "
+>
+  <h2 style="font-size: 2rem; margin-bottom: 1rem; color: #333">Cari Mobil</h2>
+  <form action="/search" method="GET" style="max-width: 500px; margin: 0 auto">
+    <input
+      type="text"
+      name="q"
+      id="search-input"
+      placeholder="Masukkan nama mobil..."
+      style="
+        padding: 1rem 2rem;
+        font-size: 1.2rem;
+        border: 2px solid #007bff;
+        border-radius: 50px;
+        width: 100%;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease-in-out;
+      "
+      onfocus="this.style.borderColor='#0056b3';"
+    />
+    <button
+      type="submit"
+      style="
+        padding: 1rem 2rem;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        font-size: 1.2rem;
+        cursor: pointer;
+        width: 100%;
+        transition: all 0.3s ease-in-out;
+      "
+      onmouseover="this.style.backgroundColor='#0056b3';"
+      onmouseout="this.style.backgroundColor='#007bff';"
+    >
+      Cari Mobil
+    </button>
+  </form>
+</div>
+
+<script>
+  // Fungsi untuk scroll ke form pencarian saat tombol diklik
+  function scrollToSearchForm() {
+    const searchForm = document.getElementById("search-form");
+    searchForm.scrollIntoView({ behavior: "smooth" });
+  }
+</script>

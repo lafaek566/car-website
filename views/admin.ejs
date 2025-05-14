@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - Input Data Mobil</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        transition: all 0.3s ease-in-out;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", sans-serif;
+        display: flex;
+        height: 100vh;
+        background-color: #f0f2f5;
+      }
+
+      .sidebar {
+        width: 250px;
+        background-color: #1e1e2f;
+        color: white;
+        padding: 30px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .sidebar h2 {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .sidebar a {
+        padding: 12px;
+        border-radius: 5px;
+        text-align: center;
+        text-decoration: none;
+        color: white;
+        background-color: #2c2c40;
+        font-weight: 500;
+      }
+
+      .sidebar a:hover,
+      .sidebar a.active-link {
+        background-color: #4f4fff;
+      }
+
+      .main-content {
+        flex-grow: 1;
+        padding: 40px;
+        overflow-y: auto;
+      }
+
+      form {
+        background: #fff;
+        padding: 20px;
+        margin-bottom: 40px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      input,
+      textarea {
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+      }
+
+      button {
+        padding: 10px 20px;
+        background-color: #4f4fff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #3d3dfc;
+      }
+
+      .item {
+        background: #fff;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-left: 5px solid #4f4fff;
+        border-radius: 6px;
+        box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .item img {
+        margin-top: 10px;
+        max-width: 120px;
+        border-radius: 5px;
+      }
+
+      .item button {
+        margin-top: 10px;
+        margin-right: 10px;
+        background-color: red;
+      }
+
+      .item .edit-btn {
+        background-color: #4f4fff;
+      }
+
+      .item .edit-btn:hover {
+        background-color: #3d3dfc;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sidebar">
+      <h2>Admin</h2>
+      <a href="/admin" class="active-link">Mobil</a>
+      <a href="/blog/admin">Blog</a>
+      <a href="/about/admin">About</a>
+    </div>
+
+    <div class="main-content">
+      <form id="mobilForm">
+        <h3>Tambah atau Edit Mobil</h3>
+        <input type="text" id="nama" placeholder="Nama Mobil" required />
+        <textarea
+          id="spesifikasi"
+          placeholder="Spesifikasi Mobil"
+          required
+        ></textarea>
+        <input type="text" id="gambar_url" placeholder="URL Gambar" required />
+        <input type="hidden" id="mobilId" />
+        <button type="submit">Simpan Mobil</button>
+      </form>
+
+      <div id="mobilList"></div>
+    </div>
+
+    <script>
+      let currentEditId = null;
+
+      // Ambil data mobil dari server
+      async function fetchMobils() {
+        try {
+          const response = await fetch("/admin/mobils");
+          const data = await response.json();
+          const container = document.getElementById("mobilList");
+          container.innerHTML = "";
+
+          data.data.forEach((mobil) => {
+            const item = document.createElement("div");
+            item.className = "item";
+            item.innerHTML = `
+              <h4>${mobil.nama}</h4>
+              <p>${mobil.spesifikasi}</p>
+              <img src="${mobil.gambar_url}" alt="${mobil.nama}" />
+              <br/>
+              <button onclick="deleteMobil(${mobil.id})">Hapus</button>
+              <button class="edit-btn" onclick="editMobil(${mobil.id})">Edit</button>
+            `;
+            container.appendChild(item);
+          });
+        } catch (error) {
+          console.error("Gagal mengambil data:", error);
+        }
+      }
+
+      // Hapus data mobil
+      async function deleteMobil(id) {
+        if (!confirm("Yakin ingin menghapus mobil ini?")) return;
+        try {
+          const response = await fetch(`/admin/${id}`, {
+            method: "DELETE",
+          });
+          const result = await response.json();
+          alert(result.message);
+          fetchMobils();
+        } catch (err) {
+          console.error("Gagal menghapus mobil:", err);
+        }
+      }
+
+      // Isi form dengan data mobil yang akan diedit
+      function editMobil(id) {
+        currentEditId = id;
+        fetch(`/admin/mobil/${id}`)
+          .then((response) => response.json())
+          .then((mobil) => {
+            document.getElementById("nama").value = mobil.nama;
+            document.getElementById("spesifikasi").value = mobil.spesifikasi;
+            document.getElementById("gambar_url").value = mobil.gambar_url;
+            document.getElementById("mobilId").value = mobil.id;
+          })
+          .catch((error) =>
+            console.error("Gagal mengambil data mobil:", error)
+          );
+      }
+
+      // Simpan data mobil (Tambah atau Update)
+      document
+        .getElementById("mobilForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const nama = document.getElementById("nama").value;
+          const spesifikasi = document.getElementById("spesifikasi").value;
+          const gambar_url = document.getElementById("gambar_url").value;
+          const mobilId = document.getElementById("mobilId").value;
+
+          try {
+            let response;
+            if (mobilId) {
+              // Jika ada ID, lakukan update
+              response = await fetch(`/admin/${mobilId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ nama, spesifikasi, gambar_url }),
+              });
+            } else {
+              // Jika tidak ada ID, lakukan insert
+              response = await fetch("/admin/insert", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ nama, spesifikasi, gambar_url }),
+              });
+            }
+
+            const result = await response.json();
+            alert(result.message || "Berhasil disimpan");
+            document.getElementById("mobilForm").reset();
+            currentEditId = null;
+            fetchMobils();
+          } catch (error) {
+            console.error("Gagal menyimpan mobil:", error);
+          }
+        });
+
+      // Load mobil saat halaman dibuka
+      fetchMobils();
+    </script>
+  </body>
+</html>

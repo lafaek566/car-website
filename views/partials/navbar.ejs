@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Navbar with Login & Register Modal</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: "Arial", sans-serif;
+        background-color: #f9f9f9;
+      }
+      /* Navbar styling */
+      .navbar {
+        background-color: #1e90ff;
+        padding: 12px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 999;
+        border-radius: 50px;
+      }
+
+      .navbar a {
+        color: white;
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: 600;
+        padding: 10px 16px;
+        transition: all 0.2s ease-in-out;
+        text-transform: lowercase;
+      }
+
+      /* Remove transform on hover to avoid cursor vibration */
+      .navbar a:hover {
+        background-color: #6bb4fd;
+        border-radius: 50%;
+        /* No transform or border-radius change here */
+      }
+
+      .navbar a.active {
+        background-color: white;
+      }
+
+      /* Login and Register link styling */
+      .login-register a {
+        color: white;
+        font-size: 14px;
+        font-weight: 500;
+        transition: color 0.3s ease;
+        text-transform: lowercase;
+      }
+
+      .login-register a:hover {
+        color: #1e90ff;
+      }
+
+      /* Modal Styling */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        max-width: 400px;
+        background-color: #ffffff;
+        padding: 25px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        border-radius: 25px;
+        z-index: 1000;
+        transition: opacity 0.3s ease;
+      }
+
+      .modal h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+        font-size: 18px;
+        text-transform: lowercase;
+        border-radius: 25px;
+      }
+
+      .modal input {
+        width: 100%;
+        padding: 12px;
+        margin: 12px 0;
+        border: 1px solid #ccc;
+        border-radius: 25px;
+        font-size: 14px;
+        box-sizing: border-box;
+        text-transform: lowercase;
+      }
+
+      .modal button {
+        width: 20%;
+        padding: 12px;
+        background-color: #ff0000;
+        color: white;
+        border: none;
+        border-radius: 25px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .modal button:hover {
+        background-color: #006fd6;
+      }
+
+      .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 18px;
+        color: #333;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        transition: color 0.3s ease;
+      }
+
+      .close-btn:hover {
+        color: #1e90ff;
+      }
+
+      /* Modal Fade-in Effect */
+      .modal.show {
+        display: block;
+        opacity: 1;
+      }
+
+      /* Remove shaking effect */
+      .modal.show {
+        transform: translate(-50%, -50%) scale(1);
+        transition: transform 0.3s ease;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .navbar {
+          flex-direction: column;
+          padding: 10px 20px;
+        }
+
+        .navbar a {
+          font-size: 14px;
+          padding: 8px 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <div class="navbar">
+      <a href="/" class="nav-item">home</a>
+      <a href="/about" class="nav-item">about</a>
+      <a href="/blog" class="nav-item">blog</a>
+      <div class="login-register">
+        <a href="#" id="show-login">login</a> /
+        <a href="#" id="show-register">register</a>
+      </div>
+    </div>
+
+    <!-- Login Form Modal -->
+    <div id="login-form" class="modal">
+      <button class="close-btn" onclick="closeForms()">&times;</button>
+      <h2>login</h2>
+      <form action="/login" method="POST">
+        <label>email:</label><br />
+        <input type="email" name="email" required /><br />
+        <label>password:</label><br />
+        <input type="password" name="password" required /><br />
+        <button type="submit">login</button>
+      </form>
+    </div>
+
+    <!-- Register Form Modal -->
+    <div id="register-form" class="modal">
+      <button class="close-btn" onclick="closeForms()">&times;</button>
+      <h2>register</h2>
+      <form action="/register" method="POST">
+        <label>name:</label><br />
+        <input type="text" name="name" required /><br />
+        <label>email:</label><br />
+        <input type="email" name="email" required /><br />
+        <label>password:</label><br />
+        <input type="password" name="password" required /><br />
+        <button type="submit">register</button>
+      </form>
+    </div>
+
+    <script>
+      const loginForm = document.getElementById("login-form");
+      const registerForm = document.getElementById("register-form");
+
+      // Show Login Form
+      document
+        .getElementById("show-login")
+        .addEventListener("click", function (e) {
+          e.preventDefault();
+          loginForm.classList.add("show");
+          registerForm.classList.remove("show");
+        });
+
+      // Show Register Form
+      document
+        .getElementById("show-register")
+        .addEventListener("click", function (e) {
+          e.preventDefault();
+          registerForm.classList.add("show");
+          loginForm.classList.remove("show");
+        });
+
+      // Close Modal
+      function closeForms() {
+        loginForm.classList.remove("show");
+        registerForm.classList.remove("show");
+      }
+    </script>
+  </body>
+</html>

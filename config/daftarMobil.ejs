@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <%- include('partials/head') %>
+    <title>Daftar Mobil</title>
+    <!-- Bisa pindahkan CSS ke file eksternal juga -->
+  </head>
+  <body>
+    <%- include('partials/navbar') %>
+
+    <h1>Daftar Mobil</h1>
+
+    <div class="search-form">
+      <form action="/search" method="GET">
+        <input
+          type="text"
+          name="q"
+          placeholder="Cari mobil..."
+          value="<%= typeof query !== 'undefined' ? query : '' %>"
+        />
+        <button type="submit">Cari</button>
+      </form>
+    </div>
+
+    <div class="mobils-container">
+      <% if (mobilList.length === 0) { %>
+      <p style="text-align: center">Mobil tidak ditemukan.</p>
+      <% } else { %> <% mobilList.forEach(mobil => { %>
+      <div class="mobil-item">
+        <a href="/mobil/<%= mobil.id %>">
+          <img src="<%= mobil.gambar_url %>" alt="<%= mobil.nama %>" />
+          <h3><%= mobil.nama %></h3>
+        </a>
+        <p><%= mobil.spesifikasi %></p>
+        <a href="/mobil/<%= mobil.id %>">
+          <button>Lihat Detail</button>
+        </a>
+      </div>
+      <% }) %> <% } %>
+    </div>
+
+    <%- include('partials/footer') %>
+  </body>
+</html>
