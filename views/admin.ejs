@@ -2,7 +2,7 @@
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Admin - Input Data Mobil</title>
     <style>
       * {
@@ -129,6 +129,7 @@
       <form id="mobilForm">
         <h3>Tambah atau Edit Mobil</h3>
         <input type="text" id="nama" placeholder="Nama Mobil" required />
+        <input type="text" id="brand" placeholder="Merk Mobil" required />
         <textarea
           id="spesifikasi"
           placeholder="Spesifikasi Mobil"
@@ -157,7 +158,7 @@
             const item = document.createElement("div");
             item.className = "item";
             item.innerHTML = `
-              <h4>${mobil.nama}</h4>
+              <h4>${mobil.brand} - ${mobil.nama}</h4>
               <p>${mobil.spesifikasi}</p>
               <img src="${mobil.gambar_url}" alt="${mobil.nama}" />
               <br/>
@@ -193,6 +194,7 @@
           .then((response) => response.json())
           .then((mobil) => {
             document.getElementById("nama").value = mobil.nama;
+            document.getElementById("brand").value = mobil.brand;
             document.getElementById("spesifikasi").value = mobil.spesifikasi;
             document.getElementById("gambar_url").value = mobil.gambar_url;
             document.getElementById("mobilId").value = mobil.id;
@@ -208,6 +210,7 @@
         .addEventListener("submit", async (e) => {
           e.preventDefault();
           const nama = document.getElementById("nama").value;
+          const brand = document.getElementById("brand").value;
           const spesifikasi = document.getElementById("spesifikasi").value;
           const gambar_url = document.getElementById("gambar_url").value;
           const mobilId = document.getElementById("mobilId").value;
@@ -219,14 +222,14 @@
               response = await fetch(`/admin/${mobilId}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ nama, spesifikasi, gambar_url }),
+                body: JSON.stringify({ nama, brand, spesifikasi, gambar_url }),
               });
             } else {
               // Jika tidak ada ID, lakukan insert
               response = await fetch("/admin/insert", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ nama, spesifikasi, gambar_url }),
+                body: JSON.stringify({ nama, brand, spesifikasi, gambar_url }),
               });
             }
 

@@ -1,5 +1,23 @@
 const db = require("../config/db.js");
 
+// Get mobil by brand and id
+// Controller: perbaiki kolom brand -> merek
+exports.getMobilByBrandAndId = (req, res) => {
+  const { brand, id } = req.params;
+
+  const query = "SELECT * FROM mobils WHERE id = ? AND merek = ?";
+  db.query(query, [id, brand], (err, results) => {
+    if (err) return res.status(500).json({ message: "Error server" });
+    if (results.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "Mobil tidak ditemukan untuk merek ini" });
+    }
+    res.json(results[0]);
+  });
+};
+
+// Get mobil by id
 exports.getMobilById = (req, res) => {
   const { id } = req.params;
 
@@ -19,6 +37,7 @@ exports.getMobilById = (req, res) => {
   });
 };
 
+// Get list of all mobils
 exports.getMobilList = (req, res) => {
   db.query("SELECT * FROM mobils", (err, results) => {
     if (err) {
@@ -28,16 +47,15 @@ exports.getMobilList = (req, res) => {
         .json({ error: "Terjadi kesalahan saat mengambil data mobil." });
     }
 
-    // Jika request dari Postman (expecting JSON)
     if (req.headers.accept && req.headers.accept.includes("application/json")) {
       return res.status(200).json({ mobilList: results });
     }
 
-    // Jika request dari browser
     res.render("index", { mobilList: results, query: "" });
   });
 };
 
+// Admin page with list
 exports.getAdminPage = (req, res) => {
   db.query("SELECT * FROM mobils", (err, results) => {
     if (err) {
@@ -47,16 +65,15 @@ exports.getAdminPage = (req, res) => {
         .json({ error: "Terjadi kesalahan saat mengambil data mobil." });
     }
 
-    // Jika request dari Postman (expecting JSON)
     if (req.headers.accept && req.headers.accept.includes("application/json")) {
       return res.status(200).json({ mobilList: results });
     }
 
-    // Jika request dari browser
     res.render("admin", { mobilList: results });
   });
 };
 
+// Get mobil list JSON only
 exports.getMobilListJSON = (req, res) => {
   db.query("SELECT * FROM mobils", (err, results) => {
     if (err) {
@@ -69,6 +86,7 @@ exports.getMobilListJSON = (req, res) => {
   });
 };
 
+// Get admin page JSON only
 exports.getAdminPageJSON = (req, res) => {
   db.query("SELECT * FROM mobils", (err, results) => {
     if (err) {
@@ -81,38 +99,46 @@ exports.getAdminPageJSON = (req, res) => {
   });
 };
 
+// Insert new mobil with brand
 exports.insertMobil = (req, res) => {
-  const { nama, spesifikasi, gambar_url } = req.body;
+  const { nama, spesifikasi, gambar_url, brand } = req.body;
 
-  // If req.body is undefined, log it for debugging
   if (!req.body) {
     console.error("Request body is undefined");
     return res.status(400).json({ error: "Request body is missing" });
   }
 
-  if (!nama || !spesifikasi || !gambar_url) {
-    return res.status(400).json({ error: "All fields are required" });
+  if (!nama || !spesifikasi || !gambar_url || !brand) {
+    return res.status(400).json({
+      error: "Semua field harus diisi (nama, spesifikasi, gambar_url, brand)",
+    });
   }
 
-  // Insert logic to store the data in the database
   const query =
-    "INSERT INTO mobils (nama, spesifikasi, gambar_url) VALUES (?, ?, ?)";
-  db.query(query, [nama, spesifikasi, gambar_url], (err, result) => {
+    "INSERT INTO mobils (nama, spesifikasi, gambar_url, brand) VALUES (?, ?, ?, ?)";
+  db.query(query, [nama, spesifikasi, gambar_url, brand], (err, result) => {
     if (err) {
       console.error("Error inserting mobil:", err);
       return res.status(500).json({ error: "Database error" });
     }
-    res.status(201).json({ message: "Mobil added successfully" });
+    res.status(201).json({ message: "Mobil berhasil ditambahkan" });
   });
 };
 
+// Update mobil by id with brand
 exports.updateMobil = (req, res) => {
   const { id } = req.params;
-  const { nama, spesifikasi, gambar_url } = req.body;
+  const { nama, spesifikasi, gambar_url, brand } = req.body;
+
+  if (!nama || !spesifikasi || !gambar_url || !brand) {
+    return res.status(400).json({
+      error: "Semua field harus diisi (nama, spesifikasi, gambar_url, brand)",
+    });
+  }
 
   const query =
-    "UPDATE mobils SET nama = ?, spesifikasi = ?, gambar_url = ? WHERE id = ?";
-  db.query(query, [nama, spesifikasi, gambar_url, id], (err, result) => {
+    "UPDATE mobils SET nama = ?, spesifikasi = ?, gambar_url = ?, brand = ? WHERE id = ?";
+  db.query(query, [nama, spesifikasi, gambar_url, brand, id], (err, result) => {
     if (err) {
       console.error("Error updating mobil:", err);
       return res.status(500).json({ error: "Gagal memperbarui data mobil." });
@@ -121,6 +147,7 @@ exports.updateMobil = (req, res) => {
   });
 };
 
+// Delete mobil by id
 exports.deleteMobil = (req, res) => {
   const { id } = req.params;
   const query = `DELETE FROM mobils WHERE id = ?`;
@@ -129,17 +156,18 @@ exports.deleteMobil = (req, res) => {
       console.error("Error deleting mobil:", err);
       return res.status(500).json({ error: "Database error" });
     }
-    res.status(200).json({ message: "Mobil deleted successfully" });
+    res.status(200).json({ message: "Mobil berhasil dihapus" });
   });
 };
 
+// Render mobil detail page
 exports.getMobilDetail = (req, res) => {
-  const id = req.params.id;
+  const { id } = req.params;
   db.query("SELECT * FROM mobils WHERE id = ?", [id], (err, results) => {
-    if (err) throw err;
-    if (results.length === 0) {
-      return res.send("Mobil tidak ditemukan.");
-    }
-    res.render("detail", { mobil: results[0] });
+    if (err) return res.status(500).send("Error server");
+    if (results.length === 0)
+      return res.status(404).send("Mobil tidak ditemukan");
+
+    res.render("mobilDetail", { mobil: results[0] }); // misal render ke mobilDetail.ejs
   });
 };

@@ -19,6 +19,9 @@ router.get("/admin/mobils", mobilController.getAdminPageJSON);
 // Menangani POST request untuk menyimpan data mobil
 router.post("/admin/insert", mobilController.insertMobil);
 
+// Route baru, menampilkan mobil berdasarkan brand dan id mobil
+router.get("/brand/:brand/mobil/:id", mobilController.getMobilByBrandAndId);
+
 // Update data mobil berdasarkan ID
 router.put("/admin/:id", mobilController.updateMobil);
 

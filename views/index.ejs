@@ -2,11 +2,11 @@
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Daftar Mobil</title>
     <link rel="stylesheet" href="/style.css" />
     <style>
-      /* Tombol Scroll ke Atas */
+      /* Scroll to Top Button */
       #scrollToTopBtn {
         display: none;
         position: fixed;
@@ -28,7 +28,7 @@
         background-color: #0056b3;
       }
 
-      /* Tombol WhatsApp */
+      /* WhatsApp Button */
       .wa-float {
         position: fixed;
         bottom: 30px;
@@ -144,6 +144,49 @@
       .search-form button:hover {
         background-color: #0056b3;
       }
+
+      #brand-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        justify-content: center;
+        max-width: 800px;
+        margin: 0 auto 40px auto;
+      }
+
+      .brand-btn {
+        padding: 10px 25px;
+        border-radius: 8px;
+        border: 2px solid #007bff;
+        background: white;
+        cursor: pointer;
+        color: #007bff;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: background-color 0.3s, color 0.3s;
+      }
+
+      .brand-btn:hover {
+        background-color: #007bff;
+        color: white;
+      }
+
+      #back-to-brands {
+        display: inline-block;
+        margin: 10px auto 30px auto;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border-radius: 8px;
+        cursor: pointer;
+        border: none;
+        font-weight: 600;
+        transition: background-color 0.3s ease;
+      }
+
+      #back-to-brands:hover {
+        background-color: #0056b3;
+      }
     </style>
   </head>
 
@@ -157,7 +200,7 @@
     <!-- Ads Above -->
     <%- include("partials/ads") %>
 
-    <!-- Title -->
+    <!-- Judul -->
     <h1>Daftar Mobil</h1>
 
     <!-- Form Pencarian -->
@@ -174,30 +217,54 @@
       </form>
     </div>
 
-    <!-- Mobil List -->
-    <div class="mobils-container">
-      <% if (mobilList.length === 0) { %>
-      <p style="text-align: center; font-size: 1.2rem">
-        Mobil tidak ditemukan.
-      </p>
-      <% } else { %> <% mobilList.forEach((mobil, index) => { %>
-      <div class="mobil-item" id="mobil-item-<%= index %>">
-        <a href="/mobil/<%= mobil.id %>">
-          <img src="<%= mobil.gambar_url %>" alt="<%= mobil.nama %>" />
-          <h3><%= mobil.nama %></h3>
-        </a>
-        <p><%= mobil.spesifikasi %></p>
-        <a href="/mobil/<%= mobil.id %>">
-          <button>Lihat Detail</button>
-        </a>
+    <!-- Pilihan Brand -->
+    <div id="brands-container">
+      <h2
+        style="
+          text-align: center;
+          color: var(--secondary-color, #007bff);
+          margin-bottom: 20px;
+        "
+      >
+        Pilih Brand Mobil
+      </h2>
+      <div id="brand-list">
+        <% const brandUnik = [...new Set(mobilList.map(m => m.brand))];
+        brandUnik.forEach(brand => { %>
+        <button class="brand-btn"><%= brand %></button>
+        <% }) %>
       </div>
-      <% }) %> <% } %>
     </div>
 
-    <!-- Tombol Scroll ke Atas -->
+    <!-- Daftar Mobil Merek Terpilih -->
+    <div
+      id="mobils-list-container"
+      style="
+        display: none;
+        max-width: 1200px;
+        margin: 0 auto 50px;
+        text-align: center;
+      "
+    >
+      <h2
+        style="
+          color: var(--secondary-color, #007bff);
+          margin-bottom: 20px;
+          text-align: center;
+        "
+      >
+        Daftar Mobil Brand: <span id="selected-brand-name"></span>
+      </h2>
+
+      <button id="back-to-brands">Kembali ke Daftar Brand</button>
+
+      <div class="mobils-container" id="mobils-list"></div>
+    </div>
+
+    <!-- Scroll ke Atas -->
     <button id="scrollToTopBtn" title="Kembali ke atas">↑</button>
 
-    <!-- Tombol WhatsApp -->
+    <!-- WhatsApp -->
     <a
       href="https://wa.me/6281234567890"
       class="wa-float"
@@ -210,38 +277,75 @@
       />
     </a>
 
-    <!-- Ads Below -->
+    <!-- Ads Bawah -->
     <%- include("partials/ads") %>
 
     <!-- Footer -->
     <%- include("partials/footer") %>
 
-    <!-- Script Scroll -->
+    <!-- Script Scroll to Top -->
     <script>
       const scrollToTopBtn = document.getElementById("scrollToTopBtn");
 
       window.addEventListener("scroll", () => {
-        if (window.scrollY > 300) {
-          scrollToTopBtn.style.display = "block";
-        } else {
-          scrollToTopBtn.style.display = "none";
-        }
+        scrollToTopBtn.style.display = window.scrollY > 300 ? "block" : "none";
       });
 
       scrollToTopBtn.addEventListener("click", () => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        // window.scrollTo({ top: 0, behavior: "smooth" });
       });
     </script>
 
-    <!-- Script Scroll ke hasil pencarian -->
+    <!-- Script Filter Brand Mobil -->
     <script>
-      const query = new URLSearchParams(window.location.search).get("q");
-      if (query) {
-        const resultItem = document.querySelector(`#mobil-item-0`);
-        if (resultItem) {
-          resultItem.scrollIntoView({ behavior: "smooth" });
-        }
-      }
+      const mobilListData = <%- JSON.stringify(mobilList) %>;
+
+      const brandButtons = document.querySelectorAll('.brand-btn');
+      const brandsContainer = document.getElementById('brands-container');
+      const mobilsListContainer = document.getElementById('mobils-list-container');
+      const mobilsListDiv = document.getElementById('mobils-list');
+      const selectedBrandName = document.getElementById('selected-brand-name');
+      const backToBrandsBtn = document.getElementById('back-to-brands');
+
+      brandButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const brand = btn.textContent.trim();
+
+          selectedBrandName.textContent = brand;
+
+          const filteredMobils = mobilListData.filter(mobil => mobil.brand === brand);
+
+          let html = '';
+          filteredMobils.forEach((mobil, idx) => {
+            html += `
+              <div class="mobil-item" id="mobil-item-${idx}">
+                <a href="/mobil/${mobil.id}">
+                  <img src="${mobil.gambar_url}" alt="${mobil.nama}" />
+                  <h3>${mobil.nama}</h3>
+                </a>
+                <p>${mobil.spesifikasi}</p>
+                <a href="/mobil/${mobil.id}">
+                  <button>Lihat Detail</button>
+                </a>
+              </div>
+            `;
+          });
+
+          mobilsListDiv.innerHTML = html;
+
+          mobilsListContainer.style.display = 'block';
+          brandsContainer.style.display = 'none';
+
+          // window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      });
+
+      backToBrandsBtn.addEventListener('click', () => {
+        mobilsListContainer.style.display = 'none';
+        brandsContainer.style.display = 'block';
+
+        // window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
     </script>
   </body>
 </html>

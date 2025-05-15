@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Detail Mobil - <%= mobil.nama %></title>
+    <style>
+      /* Reset dasar */
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f0f4f8;
+        color: #2c3e50;
+        line-height: 1.6;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1000px;
+        background-color: #fff;
+        margin: 30px auto;
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        padding: 30px 40px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 40px;
+      }
+
+      /* Kiri: gambar */
+      .image-section {
+        flex: 1 1 300px; /* diperkecil dari 400px */
+        text-align: center;
+      }
+
+      .image-section img {
+        max-width: 80%; /* diperkecil dari 100% */
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+      }
+
+      .image-section img:hover {
+        transform: scale(1.05);
+      }
+
+      /* Kanan: info */
+      .info-section {
+        flex: 1 1 450px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .info-section h1 {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        color: #1abc9c;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+      }
+
+      .info-section h2 {
+        font-size: 1.6rem;
+        margin-bottom: 10px;
+        color: #34495e;
+        border-bottom: 2px solid #1abc9c;
+        padding-bottom: 6px;
+      }
+
+      .info-section p {
+        font-size: 1.1rem;
+        color: #555;
+        line-height: 1.7;
+        margin-bottom: 25px;
+        white-space: pre-line; /* supaya line break di teks spesifikasi muncul */
+      }
+
+      /* Tombol kembali */
+      .back-button {
+        align-self: start;
+        display: inline-block;
+        background-color: #1abc9c;
+        color: white;
+        padding: 14px 28px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1.1rem;
+        box-shadow: 0 5px 15px rgba(26, 188, 156, 0.4);
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .back-button:hover {
+        background-color: #16a085;
+        box-shadow: 0 8px 25px rgba(22, 160, 133, 0.6);
+      }
+
+      /* Iklan */
+      #adsense {
+        margin: 40px auto 0;
+        text-align: center;
+        max-width: 728px;
+        width: 100%;
+      }
+
+      /* Footer */
+      footer {
+        background-color: #1abc9c;
+        color: white;
+        text-align: center;
+        padding: 15px 0;
+        margin-top: 50px;
+        border-radius: 0 0 15px 15px;
+        font-size: 1rem;
+        font-weight: 600;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .container {
+          flex-direction: column;
+          padding: 25px 20px;
+        }
+
+        .image-section,
+        .info-section {
+          flex: 1 1 100%;
+        }
+
+        .info-section h1 {
+          font-size: 2rem;
+        }
+
+        .info-section h2 {
+          font-size: 1.3rem;
+        }
+
+        .back-button {
+          padding: 12px 24px;
+          font-size: 1rem;
+        }
+
+        .image-section img {
+          max-width: 100%; /* supaya pada mobile gambarnya jadi lebih besar */
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <main class="container">
+      <!-- Gambar mobil -->
+      <section class="image-section">
+        <img
+          src="<%= mobil.gambar_url %>"
+          alt="Gambar mobil <%= mobil.nama %>"
+        />
+      </section>
+
+      <!-- Info mobil -->
+      <section class="info-section">
+        <h1><%= mobil.nama %></h1>
+
+        <h2>Spesifikasi</h2>
+        <p><%= mobil.spesifikasi %></p>
+
+        <a href="/" class="back-button" aria-label="Kembali ke Daftar Mobil"
+          >← Kembali ke Daftar Mobil</a
+        >
+      </section>
+    </main>
+
+    <!-- Iklan Adsense -->
+    <div id="adsense">
+      <script
+        async
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+      ></script>
+      <ins
+        class="adsbygoogle"
+        style="display: block"
+        data-ad-client="ca-pub-XXXXXXX"
+        data-ad-slot="XXXXXXX"
+        data-ad-format="auto"
+        data-full-width-responsive="true"
+      ></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>&copy; 2025 Daftar Mobil. All rights reserved.</p>
+    </footer>
+  </body>
+</html>
